@@ -236,6 +236,7 @@ public class ControllerImplementation implements IController, ActionListener {
         }
         insert(p);
         insert.getReset().doClick();
+        
     }
 
     private void handleReadAction() {
@@ -386,6 +387,7 @@ public class ControllerImplementation implements IController, ActionListener {
         try {
             if (dao.read(p) == null) {
                 dao.insert(p);
+                JOptionPane.showMessageDialog(insert, p.getNif() + " has been successfully registered.", insert.getTitle(), JOptionPane.INFORMATION_MESSAGE);
             } else {
                 throw new PersonException(p.getNif() + " is registered and can not "
                         + "be INSERTED.");
