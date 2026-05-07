@@ -37,6 +37,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.jdatepicker.DateModel;
+import utils.Constants;
 
 /**
  * This class starts the visual part of the application and programs and manages
@@ -119,22 +120,22 @@ public class ControllerImplementation implements IController, ActionListener {
         String daoSelected = ((javax.swing.JCheckBox) (dSS.getAccept()[1])).getText();
         dSS.dispose();
         switch (daoSelected) {
-            case "ArrayList":
+            case Constants.ARRAY_LIST:
                 dao = new DAOArrayList();
                 break;
-            case "HashMap":
+            case Constants.HASHMAP:
                 dao = new DAOHashMap();
                 break;
-            case "File":
+            case Constants.FILE:
                 setupFileStorage();
                 break;
-            case "File (Serialization)":
+            case Constants.FILE_SERIALIZATION:
                 setupFileSerialization();
                 break;
-            case "SQL - Database":
+            case Constants.SQL_DATABASE:
                 setupSQLDatabase();
                 break;
-            case "JPA - Database":
+            case Constants.JPA_DATABASE:
                 setupJPADatabase();
                 break;
         }
@@ -235,6 +236,7 @@ public class ControllerImplementation implements IController, ActionListener {
         }
         insert(p);
         insert.getReset().doClick();
+        
     }
 
     private void handleReadAction() {
@@ -385,6 +387,7 @@ public class ControllerImplementation implements IController, ActionListener {
         try {
             if (dao.read(p) == null) {
                 dao.insert(p);
+                JOptionPane.showMessageDialog(insert, p.getNif() + " has been successfully registered.", insert.getTitle(), JOptionPane.INFORMATION_MESSAGE);
             } else {
                 throw new PersonException(p.getNif() + " is registered and can not "
                         + "be INSERTED.");
@@ -436,9 +439,11 @@ public class ControllerImplementation implements IController, ActionListener {
      */
     @Override
     public void delete(Person p) {
+        int answer = JOptionPane.showConfirmDialog(delete, "Are you sure you want to delete this person?", "Delete - People",JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
         try {
             if (dao.read(p) != null) {
                 dao.delete(p);
+                JOptionPane.showMessageDialog(delete, "Person delete succesfully!", "Delete People", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 throw new PersonException(p.getNif() + " is not registered and can not "
                         + "be DELETED");
