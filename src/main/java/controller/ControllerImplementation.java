@@ -439,9 +439,11 @@ public class ControllerImplementation implements IController, ActionListener {
      */
     @Override
     public void delete(Person p) {
+        int answer = JOptionPane.showConfirmDialog(delete, "Are you sure you want to delete this person?", "Delete - People",JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
         try {
             if (dao.read(p) != null) {
                 dao.delete(p);
+                JOptionPane.showMessageDialog(delete, "Person delete succesfully!", "Delete People", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 throw new PersonException(p.getNif() + " is not registered and can not "
                         + "be DELETED");
