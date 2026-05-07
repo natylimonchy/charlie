@@ -29,6 +29,11 @@ public class Insert extends javax.swing.JDialog {
     public Insert(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        
+        JButton dateButton = (JButton) dateOfBirth.getComponent(1);
+        dateButton.setText("Select a date");
+        dateButton.setPreferredSize(null);
+        
         DropPhotoListener d = new DropPhotoListener(photo, this);
         DropTarget dropTarget = new DropTarget(photo, d);
         insert.setEnabled(false);
