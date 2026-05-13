@@ -21,10 +21,20 @@ public class Person implements Serializable{
     private String nif;
     private String name;
     private Date dateOfBirth;
+    private String email;
     @Transient
     private ImageIcon photo;
     @Lob
     private byte[] photoOnlyJPA;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
 
     public Person(){
         
@@ -57,12 +67,20 @@ public class Person implements Serializable{
      * @param dateOfBirth
      * @param photo
      */
-    public Person(String name, String nif, Date dateOfBirth, ImageIcon photo) {
+    public Person(String name, String nif, Date dateOfBirth, ImageIcon photo, String email) {
         this.name = name;      
         this.nif = nif;
         this.dateOfBirth = dateOfBirth;
         this.photo = photo;
+        this.email = email;
     }
+    
+    public Person(String name, String nif, Date dateOfBirth, String email) {
+    this.name = name;
+    this.nif = nif;
+    this.dateOfBirth = dateOfBirth;
+    this.email = email;
+}
 
     //Getters and Setters
     public String getName() {
