@@ -28,12 +28,15 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import javax.persistence.*;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.jdatepicker.DateModel;
@@ -110,7 +113,10 @@ public class ControllerImplementation implements IController, ActionListener {
         } else if (update != null && e.getSource() == update.getUpdate()) {
             handleUpdatePerson();
         } else if (e.getSource() == menu.getReadAll()) {
+            System.out.println("estoy en readAll");
             handleReadAll();
+        } else if (e.getSource() == readAll.getDataExport()) {
+            handleExportData();
         } else if (e.getSource() == menu.getDeleteAll()) {
             handleDeleteAll();
         }
@@ -236,7 +242,7 @@ public class ControllerImplementation implements IController, ActionListener {
         }
         insert(p);
         insert.getReset().doClick();
-        
+
     }
 
     private void handleReadAction() {
@@ -352,29 +358,55 @@ public class ControllerImplementation implements IController, ActionListener {
                     model.setValueAt("no", i, 3);
                 }
             }
+            readAll.getDataExport().addActionListener(this);
             readAll.setVisible(true);
         }
+    }
+
+    public void handleExportData() {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            String fileName = "people_data_" + sdf.format(new Date()) + ".csv";
+
+            JFileChooser fc = new JFileChooser();
+            fc.setSelectedFile(new File(fileName));
+
+            // Si el usuario pulsa guardar
+            if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                //TODO1 xonseguir ruta dekl filechooser
+                File file = fc.getSelectedFile();
+                System.out.println("route");
+                ArrayList<Person> people = readAll();
+                DAOFile daof = new DAOFile();
+                daof.export(people, file);
+                JOptionPane.showMessageDialog(null,
+                        "Data exported successfully as " + fileName);
+            }
+        } catch (IOException ex) {
+            System.getLogger(ControllerImplementation.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+
     }
 
     public void handleDeleteAll() {
         Object[] options = {"Yes", "No"};
         //int answer = JOptionPane.showConfirmDialog(menu, "Are you sure to delete all people registered?", "Delete All - People v1.1.0", 0, 0);
         int answer = JOptionPane.showOptionDialog(
-        menu,
-        "Are you sure you want to delete all registered people?", 
-        "Delete All - People v1.1.0",
-        JOptionPane.YES_NO_OPTION,
-        JOptionPane.WARNING_MESSAGE,
-        null,
-        options,
-        options[1] // Default selection is "No"
-    );
+                menu,
+                "Are you sure you want to delete all registered people?",
+                "Delete All - People v1.1.0",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE,
+                null,
+                options,
+                options[1] // Default selection is "No"
+        );
 
         if (answer == 0) {
             deleteAll();
         }
     }
-    
+
     /**
      * This function inserts the Person object with the requested NIF, if it
      * doesn't exist. If there is any access problem with the storage device,
@@ -439,7 +471,7 @@ public class ControllerImplementation implements IController, ActionListener {
      */
     @Override
     public void delete(Person p) {
-        int answer = JOptionPane.showConfirmDialog(delete, "Are you sure you want to delete this person?", "Delete - People",JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+        int answer = JOptionPane.showConfirmDialog(delete, "Are you sure you want to delete this person?", "Delete - People", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
         try {
             if (dao.read(p) != null) {
                 dao.delete(p);
