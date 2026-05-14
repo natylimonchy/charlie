@@ -27,6 +27,10 @@ public class ReadAll extends javax.swing.JDialog {
         return table;
     }
 
+    public javax.swing.JButton getDataExport(){
+        return dataExport;
+    }
+    
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -41,6 +45,7 @@ public class ReadAll extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
+        dataExport = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Read All - People v1.1.0");
@@ -92,11 +97,15 @@ public class ReadAll extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(12, 24, 12, 24);
         getContentPane().add(jLabel2, gridBagConstraints);
 
+        dataExport.setText("EXPORT DATA");
+        getContentPane().add(dataExport, new java.awt.GridBagConstraints());
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton dataExport;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;

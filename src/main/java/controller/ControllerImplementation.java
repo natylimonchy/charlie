@@ -28,12 +28,15 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import javax.persistence.*;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.jdatepicker.DateModel;
@@ -111,7 +114,10 @@ public class ControllerImplementation implements IController, ActionListener {
         } else if (update != null && e.getSource() == update.getUpdate()) {
             handleUpdatePerson();
         } else if (e.getSource() == menu.getReadAll()) {
+            System.out.println("estoy en readAll");
             handleReadAll();
+        } else if (e.getSource() == readAll.getDataExport()) {
+            handleExportData();
         } else if (e.getSource() == menu.getDeleteAll()) {
             handleDeleteAll();
         }
@@ -386,8 +392,34 @@ public class ControllerImplementation implements IController, ActionListener {
                     model.setValueAt("", i, 4);
                 }
             }
+            readAll.getDataExport().addActionListener(this);
             readAll.setVisible(true);
         }
+    }
+
+    public void handleExportData() {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            String fileName = "people_data_" + sdf.format(new Date()) + ".csv";
+
+            JFileChooser fc = new JFileChooser();
+            fc.setSelectedFile(new File(fileName));
+
+            // Si el usuario pulsa guardar
+            if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                //TODO1 xonseguir ruta dekl filechooser
+                File file = fc.getSelectedFile();
+                System.out.println("route");
+                ArrayList<Person> people = readAll();
+                DAOFile daof = new DAOFile();
+                daof.export(people, file);
+                JOptionPane.showMessageDialog(null,
+                        "Data exported successfully as " + fileName);
+            }
+        } catch (IOException ex) {
+            System.getLogger(ControllerImplementation.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+
     }
 
     public void handleDeleteAll() {
