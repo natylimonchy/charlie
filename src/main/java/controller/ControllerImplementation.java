@@ -38,6 +38,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.jdatepicker.DateModel;
 import utils.Constants;
+import utils.DataValidation;
 
 /**
  * This class starts the visual part of the application and programs and manages
@@ -180,16 +181,21 @@ public class ControllerImplementation implements IController, ActionListener {
                     Routes.DB.getDbServerUser(), Routes.DB.getDbServerPassword());
             if (conn != null) {
                 Statement stmt = conn.createStatement();
+                System.out.println("184");
                 stmt.executeUpdate("create database if not exists " + Routes.DB.getDbServerDB() + ";");
+                System.out.println("186");
                 stmt.executeUpdate("create table if not exists " + Routes.DB.getDbServerDB() + "." + Routes.DB.getDbServerTABLE() + "("
                         + "nif varchar(9) primary key not null, "
                         + "name varchar(50), "
                         + "dateOfBirth DATE, "
-                        + "photo varchar(200) );");
+                        + "photo varchar(200),"
+                        + "email varchar(200) );");
                 stmt.close();
+                System.out.println("193");
                 conn.close();
             }
         } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
             JOptionPane.showMessageDialog(dSS, "SQL-DDBB structure not created. Closing application.", "SQL_DDBB - People v1.1.0", JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
@@ -234,9 +240,17 @@ public class ControllerImplementation implements IController, ActionListener {
         if (insert.getPhoto().getIcon() != null) {
             p.setPhoto((ImageIcon) insert.getPhoto().getIcon());
         }
+        String email = insert.getEmail().getText().trim();
+        if (!email.isEmpty() && !DataValidation.isValidEmail(email)) {
+            JOptionPane.showMessageDialog(insert, "Invalid email format.", insert.getTitle(), JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (!email.isEmpty()) {
+            p.setEmail(email);
+        }
         insert(p);
         insert.getReset().doClick();
-        
+
     }
 
     private void handleReadAction() {
@@ -260,6 +274,9 @@ public class ControllerImplementation implements IController, ActionListener {
             if (pNew.getPhoto() != null) {
                 pNew.getPhoto().getImage().flush();
                 read.getPhoto().setIcon(pNew.getPhoto());
+            }
+            if (pNew.getEmail() != null) {
+                read.getEmail().setText(pNew.getEmail());
             }
         } else {
             JOptionPane.showMessageDialog(read, p.getNif() + " doesn't exist.", read.getTitle(), JOptionPane.WARNING_MESSAGE);
@@ -298,6 +315,10 @@ public class ControllerImplementation implements IController, ActionListener {
                 update.getPhoto().setEnabled(true);
                 update.getUpdate().setEnabled(true);
                 update.getNam().setText(pNew.getName());
+                update.getEmail().setEnabled(true);
+                if (pNew.getEmail() != null) {
+                    update.getEmail().setText(pNew.getEmail());
+                }
                 if (pNew.getDateOfBirth() != null) {
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTime(pNew.getDateOfBirth());
@@ -325,6 +346,14 @@ public class ControllerImplementation implements IController, ActionListener {
             if ((ImageIcon) (update.getPhoto().getIcon()) != null) {
                 p.setPhoto((ImageIcon) update.getPhoto().getIcon());
             }
+            String email = update.getEmail().getText().trim();
+            if (!email.isEmpty() && !DataValidation.isValidEmail(email)) {
+                JOptionPane.showMessageDialog(update, "Invalid email format.", update.getTitle(), JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (!email.isEmpty()) {
+                p.setEmail(email);
+            }
             update(p);
             update.getReset().doClick();
         }
@@ -351,6 +380,11 @@ public class ControllerImplementation implements IController, ActionListener {
                 } else {
                     model.setValueAt("no", i, 3);
                 }
+                if (s.get(i).getEmail() != null) {
+                    model.setValueAt(s.get(i).getEmail(), i, 4);
+                } else {
+                    model.setValueAt("", i, 4);
+                }
             }
             readAll.setVisible(true);
         }
@@ -360,21 +394,21 @@ public class ControllerImplementation implements IController, ActionListener {
         Object[] options = {"Yes", "No"};
         //int answer = JOptionPane.showConfirmDialog(menu, "Are you sure to delete all people registered?", "Delete All - People v1.1.0", 0, 0);
         int answer = JOptionPane.showOptionDialog(
-        menu,
-        "Are you sure you want to delete all registered people?", 
-        "Delete All - People v1.1.0",
-        JOptionPane.YES_NO_OPTION,
-        JOptionPane.WARNING_MESSAGE,
-        null,
-        options,
-        options[1] // Default selection is "No"
-    );
+                menu,
+                "Are you sure you want to delete all registered people?",
+                "Delete All - People v1.1.0",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE,
+                null,
+                options,
+                options[1] // Default selection is "No"
+        );
 
         if (answer == 0) {
             deleteAll();
         }
     }
-    
+
     /**
      * This function inserts the Person object with the requested NIF, if it
      * doesn't exist. If there is any access problem with the storage device,
@@ -445,7 +479,7 @@ public class ControllerImplementation implements IController, ActionListener {
      */
     @Override
     public void delete(Person p) {
-        int answer = JOptionPane.showConfirmDialog(delete, "Are you sure you want to delete this person?", "Delete - People",JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+        int answer = JOptionPane.showConfirmDialog(delete, "Are you sure you want to delete this person?", "Delete - People", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
         try {
             if (dao.read(p) != null) {
                 dao.delete(p);
@@ -527,7 +561,6 @@ public class ControllerImplementation implements IController, ActionListener {
     @Override
     public void deleteAll() {
         try {
-            JOptionPane.showMessageDialog(delete, "All persons have been deleted succesfully", "Message", JOptionPane.INFORMATION_MESSAGE);
             dao.deleteAll();
         } catch (Exception ex) {
             if (ex instanceof FileNotFoundException || ex instanceof IOException
