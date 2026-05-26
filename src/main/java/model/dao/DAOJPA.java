@@ -143,5 +143,10 @@ public class DAOJPA implements IDAO {
         }
         em.getTransaction().commit();
     }
+    
+    @Override
+    public int count() throws Exception {
+        return readAll().size();
+    }
 
 }
