@@ -64,7 +64,11 @@ public class DAOFile implements IDAO {
                 if (!data[5].equals("null")) {
                     numberPhone = data[5];
                 }
-                personToRead = new Person(data[0], data[1], date, photo, email, numberPhone);
+                String postalCode = null;
+                if (!data[6].equals("null")) {
+                    postalCode = data[6];
+                }
+                personToRead = new Person(data[0], data[1], date, photo, email, numberPhone, postalCode);
                 break;
             }
             line = br.readLine();
@@ -101,7 +105,11 @@ public class DAOFile implements IDAO {
             if (!data[5].equals("null")) {
                 numberPhone = data[5];
             }
-            people.add(new Person(data[0], data[1], date, photo, email, numberPhone));
+            String postalCode = null;
+            if (!data[6].equals("null")) {
+                numberPhone = data[6];
+            }
+            people.add(new Person(data[0], data[1], date, photo, email, numberPhone, postalCode));
             line = br.readLine();
         }
         br.close();
@@ -207,9 +215,9 @@ public class DAOFile implements IDAO {
             }
             outB.flush();
             outB.close();
-            bw.write(fileName + "\t" + (p.getEmail() != null ? p.getEmail() : "null") + "\t" + (p.getNumberPhone() != null ? p.getNumberPhone() : "null") + "\n");
+            bw.write(fileName + "\t" + (p.getEmail() != null ? p.getEmail() : "null") + "\t" + (p.getNumberPhone() != null ? p.getNumberPhone() : "null") + "\t" + (p.getPostalCode() != null ? p.getPostalCode() : "null") + "\n");
         } else {
-            bw.write("null" + "\t" + (p.getEmail() != null ? p.getEmail() : "null") + "\t" + (p.getNumberPhone() != null ? p.getNumberPhone() : "null") + "\n");
+            bw.write("null" + "\t" + (p.getEmail() != null ? p.getEmail() : "null") + "\t" + (p.getNumberPhone() != null ? p.getNumberPhone() : "null") + "\t" + (p.getPostalCode() != null ? p.getPostalCode() : "null") + "\n");
         }
         bw.flush();
         bw.close();
@@ -231,7 +239,7 @@ public class DAOFile implements IDAO {
                     photoFile.delete();
                 }
             } else {
-                textoNuevo += d[0] + "\t" + d[1] + "\t" + d[2] + "\t" + d[3] + "\t" + d[4] + "\t" + d[5]
+                textoNuevo += d[0] + "\t" + d[1] + "\t" + d[2] + "\t" + d[3] + "\t" + d[4] + "\t" + d[5] + d[6]
                         + "\n";
             }
         }

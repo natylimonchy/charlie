@@ -23,6 +23,7 @@ public class Person implements Serializable{
     private Date dateOfBirth;
     private String email;
     private String numberPhone;
+    private String postalCode;
     @Transient
     private ImageIcon photo;
     @Lob
@@ -61,21 +62,23 @@ public class Person implements Serializable{
      * @param dateOfBirth
      * @param photo
      */
-    public Person(String name, String nif, Date dateOfBirth, ImageIcon photo, String email, String numberPhone) {
+    public Person(String name, String nif, Date dateOfBirth, ImageIcon photo, String email, String numberPhone, String postalCode) {
         this.name = name;      
         this.nif = nif;
         this.dateOfBirth = dateOfBirth;
         this.photo = photo;
         this.email = email;
         this.numberPhone = numberPhone;
+        this.numberPhone = postalCode;
     }
     
-    public Person(String name, String nif, Date dateOfBirth, String email, String numberPhone) {
+    public Person(String name, String nif, Date dateOfBirth, String email, String numberPhone, String postalCode) {
     this.name = name;
     this.nif = nif;
     this.dateOfBirth = dateOfBirth;
     this.email = email;
     this.numberPhone = numberPhone;
+    this.postalCode = postalCode;
 }
 
     //Getters and Setters
@@ -133,6 +136,14 @@ public class Person implements Serializable{
 
     public void setNumberPhone(String numberPhone) {
         this.numberPhone = numberPhone;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
     }
     
     /**
