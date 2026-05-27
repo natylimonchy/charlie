@@ -59,7 +59,12 @@ public class DAOFile implements IDAO {
                 if (!data[4].equals("null")) {
                     email = data[4];
                 }
-                personToRead = new Person(data[0], data[1], date, photo, email);
+                
+                String numberPhone = null;
+                if (!data[5].equals("null")) {
+                    numberPhone = data[5];
+                }
+                personToRead = new Person(data[0], data[1], date, photo, email, numberPhone);
                 break;
             }
             line = br.readLine();
@@ -92,7 +97,11 @@ public class DAOFile implements IDAO {
             if (!data[4].equals("null")) {
                 email = data[4];
             }
-            people.add(new Person(data[0], data[1], date, photo, email));
+            String numberPhone = null;
+            if (!data[5].equals("null")) {
+                numberPhone = data[5];
+            }
+            people.add(new Person(data[0], data[1], date, photo, email, numberPhone));
             line = br.readLine();
         }
         br.close();
@@ -198,9 +207,9 @@ public class DAOFile implements IDAO {
             }
             outB.flush();
             outB.close();
-            bw.write(fileName + "\t" + (p.getEmail() != null ? p.getEmail() : "null") + "\n");
+            bw.write(fileName + "\t" + (p.getEmail() != null ? p.getEmail() : "null") + "\t" + (p.getNumberPhone() != null ? p.getNumberPhone() : "null") + "\n");
         } else {
-            bw.write("null" + "\t" + (p.getEmail() != null ? p.getEmail() : "null") + "\n");
+            bw.write("null" + "\t" + (p.getEmail() != null ? p.getEmail() : "null") + "\t" + (p.getNumberPhone() != null ? p.getNumberPhone() : "null") + "\n");
         }
         bw.flush();
         bw.close();
@@ -222,7 +231,7 @@ public class DAOFile implements IDAO {
                     photoFile.delete();
                 }
             } else {
-                textoNuevo += d[0] + "\t" + d[1] + "\t" + d[2] + "\t" + d[3] + "\t" + d[4]
+                textoNuevo += d[0] + "\t" + d[1] + "\t" + d[2] + "\t" + d[3] + "\t" + d[4] + "\t" + d[5]
                         + "\n";
             }
         }

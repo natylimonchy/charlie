@@ -118,7 +118,7 @@ public class ControllerImplementation implements IController, ActionListener {
         } else if (e.getSource() == menu.getReadAll()) {
             System.out.println("estoy en readAll");
             handleReadAll();
-        } else if (e.getSource() == readAll.getDataExport()) {
+        } else if (readAll != null && e.getSource() == readAll.getDataExport()) {
             handleExportData();
         } else if (e.getSource() == menu.getDeleteAll()) {
             handleDeleteAll();
@@ -199,7 +199,8 @@ public class ControllerImplementation implements IController, ActionListener {
                         + "name varchar(50), "
                         + "dateOfBirth DATE, "
                         + "photo varchar(200),"
-                        + "email varchar(200) );");
+                        + "email varchar(200),"
+                        + "numberPhone varchar(9) );");
                 stmt.close();
                 System.out.println("193");
                 conn.close();
@@ -259,6 +260,17 @@ public class ControllerImplementation implements IController, ActionListener {
         if (!email.isEmpty()) {
             p.setEmail(email);
         }
+        
+        String phoneNumber = insert.getPhoneNumber().getText().trim();
+        if (!phoneNumber.isEmpty() && !DataValidation.isValidPhoneNumber(phoneNumber)) {
+            JOptionPane.showMessageDialog(insert, "Invalid phone number format.", insert.getTitle(), JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (!phoneNumber.isEmpty()) {
+            p.setNumberPhone(phoneNumber);
+        }
+        
+        System.out.println("handleInsertPerson llamado: " + p.toString());
         insert(p);
         insert.getReset().doClick();
 
@@ -288,6 +300,9 @@ public class ControllerImplementation implements IController, ActionListener {
             }
             if (pNew.getEmail() != null) {
                 read.getEmail().setText(pNew.getEmail());
+            }
+            if (pNew.getNumberPhone() != null) {
+                read.getPhoneNumber().setText(pNew.getNumberPhone());
             }
         } else {
             JOptionPane.showMessageDialog(read, p.getNif() + " doesn't exist.", read.getTitle(), JOptionPane.WARNING_MESSAGE);
@@ -327,8 +342,12 @@ public class ControllerImplementation implements IController, ActionListener {
                 update.getUpdate().setEnabled(true);
                 update.getNam().setText(pNew.getName());
                 update.getEmail().setEnabled(true);
+                update.getPhoneNumber().setEnabled(true);
                 if (pNew.getEmail() != null) {
                     update.getEmail().setText(pNew.getEmail());
+                }
+                if (pNew.getNumberPhone() != null) {
+                    update.getPhoneNumber().setText(pNew.getNumberPhone());
                 }
                 if (pNew.getDateOfBirth() != null) {
                     Calendar calendar = Calendar.getInstance();
@@ -365,6 +384,16 @@ public class ControllerImplementation implements IController, ActionListener {
             if (!email.isEmpty()) {
                 p.setEmail(email);
             }
+            
+            String phoneNumber = update.getPhoneNumber().getText().trim();
+            if (!phoneNumber.isEmpty() && !DataValidation.isValidPhoneNumber(phoneNumber)) {
+                JOptionPane.showMessageDialog(update, "Invalid phone number format.", update.getTitle(), JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (!phoneNumber.isEmpty()) {
+                p.setNumberPhone(phoneNumber);
+            }
+            
             update(p);
             update.getReset().doClick();
         }
@@ -395,6 +424,11 @@ public class ControllerImplementation implements IController, ActionListener {
                     model.setValueAt(s.get(i).getEmail(), i, 4);
                 } else {
                     model.setValueAt("", i, 4);
+                }
+                if (s.get(i).getNumberPhone() != null) {
+                    model.setValueAt(s.get(i).getNumberPhone(), i, 5);
+                } else {
+                    model.setValueAt("", i, 5);
                 }
             }
             readAll.getDataExport().addActionListener(this);
