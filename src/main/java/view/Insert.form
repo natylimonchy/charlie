@@ -53,6 +53,7 @@
                               <Component id="email" min="-2" pref="403" max="-2" attributes="0"/>
                           </Group>
                           <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
@@ -61,13 +62,14 @@
                           <Component id="jLabel2" alignment="0" min="-2" pref="761" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="358" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="phoneNumber" min="-2" pref="403" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="phoneNumber" max="32767" attributes="0"/>
                                   <Group type="102" attributes="0">
                                       <Component id="insert" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="29" pref="29" max="-2" attributes="0"/>
                                       <Component id="reset" min="-2" max="-2" attributes="0"/>
                                   </Group>
+                                  <Component id="postalCode" alignment="0" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -111,7 +113,12 @@
                   <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="phoneNumber" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="31" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="postalCode" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="26" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="insert" min="-2" max="-2" attributes="0"/>
                   <Component id="reset" min="-2" max="-2" attributes="0"/>
@@ -333,6 +340,16 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="phoneNumber">
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel4">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Segoe UI" size="18" style="1"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Postal Code"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="postalCode">
     </Component>
   </SubComponents>
 </Form>
