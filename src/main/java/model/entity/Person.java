@@ -22,18 +22,12 @@ public class Person implements Serializable{
     private String name;
     private Date dateOfBirth;
     private String email;
+    private String numberPhone;
     @Transient
     private ImageIcon photo;
     @Lob
     private byte[] photoOnlyJPA;
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
     
 
     public Person(){
@@ -67,19 +61,21 @@ public class Person implements Serializable{
      * @param dateOfBirth
      * @param photo
      */
-    public Person(String name, String nif, Date dateOfBirth, ImageIcon photo, String email) {
+    public Person(String name, String nif, Date dateOfBirth, ImageIcon photo, String email, String numberPhone) {
         this.name = name;      
         this.nif = nif;
         this.dateOfBirth = dateOfBirth;
         this.photo = photo;
         this.email = email;
+        this.numberPhone = numberPhone;
     }
     
-    public Person(String name, String nif, Date dateOfBirth, String email) {
+    public Person(String name, String nif, Date dateOfBirth, String email, String numberPhone) {
     this.name = name;
     this.nif = nif;
     this.dateOfBirth = dateOfBirth;
     this.email = email;
+    this.numberPhone = numberPhone;
 }
 
     //Getters and Setters
@@ -123,6 +119,22 @@ public class Person implements Serializable{
         this.photoOnlyJPA = photoOnlyJPA;
     }
         
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getNumberPhone() {
+        return numberPhone;
+    }
+
+    public void setNumberPhone(String numberPhone) {
+        this.numberPhone = numberPhone;
+    }
+    
     /**
      * Function used to compare two Personas. There cannot be two or more people
      * with the same ID. Actually it isn't used in this project.
