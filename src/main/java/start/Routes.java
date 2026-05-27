@@ -14,7 +14,9 @@ public enum Routes {
     FILES ("FileSer", null, "dataFile.ser", null, null, null, null, null, null ),
     DB("SQL_DataBase", "Photos", null, "jdbc:mysql://localhost:3306", "?useSSL=false&useTimezone=true&serverTimezone=UTC&allowPublicKeyRetrieval=true", "root", "", "people", "person"),
     DBO("JPA_DataBase", null, null, "objectdb://localhost/people.odb;user=admin;password=admin", null, null, null, null, null);
-
+     
+    
+    
     private final String folderPath;
     private final String folderPhotos;
     private final String dataFile;

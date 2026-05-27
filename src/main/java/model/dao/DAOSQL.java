@@ -33,8 +33,8 @@ public class DAOSQL implements IDAO {
 
     private final String SQL_SELECT_ALL = "SELECT * FROM " + Routes.DB.getDbServerDB() + "." + Routes.DB.getDbServerTABLE() + ";";
     private final String SQL_SELECT = "SELECT * FROM " + Routes.DB.getDbServerDB() + "." + Routes.DB.getDbServerTABLE() + " WHERE (nif = ?);";
-    private final String SQL_INSERT = "INSERT INTO " + Routes.DB.getDbServerDB() + "." + Routes.DB.getDbServerTABLE() + " (nif, name, dateOfBirth, photo) VALUES (?, ?, ?, ?);";
-    private final String SQL_UPDATE = "UPDATE " + Routes.DB.getDbServerDB() + "." + Routes.DB.getDbServerTABLE() + " SET name = ?, dateOfBirth = ?, photo = ? WHERE (nif = ?);";
+    private final String SQL_INSERT = "INSERT INTO " + Routes.DB.getDbServerDB() + "." + Routes.DB.getDbServerTABLE() + " (nif, name, dateOfBirth, photo, email) VALUES (?, ?, ?, ?, ?);";
+    private final String SQL_UPDATE = "UPDATE " + Routes.DB.getDbServerDB() + "." + Routes.DB.getDbServerTABLE() + " SET name = ?, dateOfBirth = ?, photo = ?, email = ? WHERE (nif = ?);";
     private final String SQL_DELETE = "DELETE FROM " + Routes.DB.getDbServerDB() + "." + Routes.DB.getDbServerTABLE() + " WHERE (nif = ";
     private final String SQL_DELETE_ALL = "TRUNCATE " + Routes.DB.getDbServerDB() + "." + Routes.DB.getDbServerTABLE();
     private final String SQL_COUNT = "SELECT COUNT(*) FROM " + Routes.DB.getDbServerDB() + "." + Routes.DB.getDbServerTABLE() + ";";
@@ -71,6 +71,10 @@ public class DAOSQL implements IDAO {
             if (photo != null) {
                 pReturn.setPhoto(new ImageIcon(photo));
             }
+            String email = rs.getString("email");
+            if (email != null) {
+                pReturn.setEmail(email);
+            }
         }
         rs.close();
         instruction.close();
@@ -79,7 +83,7 @@ public class DAOSQL implements IDAO {
     }
 
     @Override
-    public ArrayList<Person> readAll() throws SQLException{
+    public ArrayList<Person> readAll() throws SQLException {
         ArrayList<Person> people = new ArrayList<>();
         Connection conn;
         Statement instruction;
@@ -92,10 +96,11 @@ public class DAOSQL implements IDAO {
             String name = rs.getString("name");
             Date date = rs.getDate("dateOfBirth");
             String photo = rs.getString("photo");
+            String email = rs.getString("email");
             if (photo != null) {
-                people.add(new Person(nif, name, date, new ImageIcon(photo)));
+                people.add(new Person(nif, name, date, new ImageIcon(photo), email));
             } else {
-                people.add(new Person(nif, name, date, null));
+                people.add(new Person(nif, name, date, null, email));
             }
         }
         rs.close();
@@ -155,6 +160,9 @@ public class DAOSQL implements IDAO {
         } else {
             instruction.setString(4, null);
         }
+
+        instruction.setString(5, p.getEmail());
+
         instruction.executeUpdate();
         instruction.close();
         disconnect(conn);
@@ -197,7 +205,8 @@ public class DAOSQL implements IDAO {
                     + ".png");
             photoFile.delete();
         }
-        instruction.setString(4, p.getNif());
+        instruction.setString(4, p.getEmail());
+        instruction.setString(5, p.getNif());
         instruction.executeUpdate();
         instruction.close();
         disconnect(conn);
@@ -214,8 +223,9 @@ public class DAOSQL implements IDAO {
         instruction.close();
         disconnect(conn);
         File file = new File(Routes.DB.getFolderPhotos() + File.separator);
-        for(File f : file.listFiles())
+        for (File f : file.listFiles()) {
             f.delete();
+        }
     }
     
     @Override
