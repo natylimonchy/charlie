@@ -21,8 +21,10 @@ public class Start {
      * @version 1.1.0
      */
     public static void main(String[] args) {
+    javax.swing.SwingUtilities.invokeLater(() -> {
         DataStorageSelection dSS = new DataStorageSelection();      
         IController cont = new ControllerImplementation(dSS);
-        cont.start();     
-     }
+        cont.start();
+    });
+}
 }
