@@ -46,18 +46,8 @@ import utils.Constants;
 import utils.DataValidation;
 import view.Login;
 
-/**
- * This class starts the visual part of the application and programs and manages
- * all the events that it can receive from it. For each event received the
- * controller performs an action.
- *
- * @author Francesc Perez
- * @version 1.1.0
- */
 public class ControllerImplementation implements IController, ActionListener {
 
-    //Instance variables used so that both the visual and model parts can be 
-    //accessed from the Controller.
     private final DataStorageSelection dSS;
     private IDAO dao;
     private Menu menu;
@@ -70,33 +60,16 @@ public class ControllerImplementation implements IController, ActionListener {
     private Count count;
     private UserRole userRole;
 
-    /**
-     * This constructor allows the controller to know which data storage option
-     * the user has chosen.Schedule an event to deploy when the user has made
-     * the selection.
-     *
-     * @param dSS
-     */
     public ControllerImplementation(DataStorageSelection dSS) {
         this.dSS = dSS;
         ((JButton) (dSS.getAccept()[0])).addActionListener(this);
     }
 
-    /**
-     * With this method, the application is started, asking the user for the
-     * chosen storage system.
-     */
     @Override
     public void start() {
         dSS.setVisible(true);
     }
 
-    /**
-     * This receives method handles the events of the visual part. Each event
-     * has an associated action.
-     *
-     * @param e The event generated in the visual part
-     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == dSS.getAccept()[0]) {
@@ -196,9 +169,7 @@ public class ControllerImplementation implements IController, ActionListener {
                     Routes.DB.getDbServerUser(), Routes.DB.getDbServerPassword());
             if (conn != null) {
                 Statement stmt = conn.createStatement();
-                System.out.println("184");
                 stmt.executeUpdate("create database if not exists " + Routes.DB.getDbServerDB() + ";");
-                System.out.println("186");
                 stmt.executeUpdate("create table if not exists " + Routes.DB.getDbServerDB() + "." + Routes.DB.getDbServerTABLE() + "("
                         + "nif varchar(9) primary key not null, "
                         + "name varchar(50), "
@@ -208,11 +179,9 @@ public class ControllerImplementation implements IController, ActionListener {
                         + "numberPhone varchar(9),"
                         + "postalCode varchar(5) );");
                 stmt.close();
-                System.out.println("193");
                 conn.close();
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
             JOptionPane.showMessageDialog(dSS, "SQL-DDBB structure not created. Closing application.", "SQL_DDBB - People v1.1.0", JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
@@ -254,14 +223,8 @@ public class ControllerImplementation implements IController, ActionListener {
     private void handleLogin() {
         String user = loginView.getUser().getText();
         String pass = new String(loginView.getPassword().getPassword());
-        if (user.equals(Constants.ADMIN_USER) && pass.equals(Constants.ADMIN_PASSWORD)) {
-            userRole = UserRole.ADMIN;
-            JOptionPane.showMessageDialog(loginView, "Login successful. Welcome, Admin!", loginView.getTitle(), JOptionPane.INFORMATION_MESSAGE);
-            loginView.dispose();
-            setupMenu();
-        } else if (user.equals(Constants.EMPLOYEE_USER) && pass.equals(Constants.EMPLOYEE_PASSWORD)) {
-            userRole = UserRole.EMPLOYEE;
-            JOptionPane.showMessageDialog(loginView, "Login successful. Welcome, Employee!", loginView.getTitle(), JOptionPane.INFORMATION_MESSAGE);
+        if (user.equals(Constants.VALID_USER) && pass.equals(Constants.VALID_PASSWORD)) {
+            JOptionPane.showMessageDialog(loginView, "Login successful.", loginView.getTitle(), JOptionPane.INFORMATION_MESSAGE);
             loginView.dispose();
             setupMenu();
         } else {
@@ -291,7 +254,6 @@ public class ControllerImplementation implements IController, ActionListener {
         if (!email.isEmpty()) {
             p.setEmail(email);
         }
-
         String phoneNumber = insert.getPhoneNumber().getText().trim();
         if (!phoneNumber.isEmpty() && !DataValidation.isValidPhoneNumber(phoneNumber)) {
             JOptionPane.showMessageDialog(insert, "Invalid phone number format.", insert.getTitle(), JOptionPane.ERROR_MESSAGE);
@@ -300,7 +262,6 @@ public class ControllerImplementation implements IController, ActionListener {
         if (!phoneNumber.isEmpty()) {
             p.setNumberPhone(phoneNumber);
         }
-
         String postalCode = insert.getPostalCode().getText().trim();
         if (!postalCode.isEmpty() && !DataValidation.isValidPostalCode(postalCode)) {
             JOptionPane.showMessageDialog(insert, "Invalid postal code format.", insert.getTitle(), JOptionPane.ERROR_MESSAGE);
@@ -309,10 +270,8 @@ public class ControllerImplementation implements IController, ActionListener {
         if (!postalCode.isEmpty()) {
             p.setPostalCode(postalCode);
         }
-
         insert(p);
         insert.getReset().doClick();
-
     }
 
     private void handleReadAction() {
@@ -332,7 +291,6 @@ public class ControllerImplementation implements IController, ActionListener {
                 DateModel<Calendar> dateModel = (DateModel<Calendar>) read.getDateOfBirth().getModel();
                 dateModel.setValue(calendar);
             }
-            //To avoid charging former images
             if (pNew.getPhoto() != null) {
                 pNew.getPhoto().getImage().flush();
                 read.getPhoto().setIcon(pNew.getPhoto());
@@ -430,7 +388,6 @@ public class ControllerImplementation implements IController, ActionListener {
             if (!email.isEmpty()) {
                 p.setEmail(email);
             }
-
             String phoneNumber = update.getPhoneNumber().getText().trim();
             if (!phoneNumber.isEmpty() && !DataValidation.isValidPhoneNumber(phoneNumber)) {
                 JOptionPane.showMessageDialog(update, "Invalid phone number format.", update.getTitle(), JOptionPane.ERROR_MESSAGE);
@@ -441,13 +398,12 @@ public class ControllerImplementation implements IController, ActionListener {
             }
             String postalCode = update.getPostalCode().getText().trim();
             if (!postalCode.isEmpty() && !DataValidation.isValidPostalCode(postalCode)) {
-                JOptionPane.showMessageDialog(update, "Invalid phone number format.", update.getTitle(), JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(update, "Invalid postal code format.", update.getTitle(), JOptionPane.ERROR_MESSAGE);
                 return;
             }
             if (!postalCode.isEmpty()) {
                 p.setPostalCode(postalCode);
             }
-
             update(p);
             update.getReset().doClick();
         }
@@ -499,30 +455,22 @@ public class ControllerImplementation implements IController, ActionListener {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
             String fileName = "people_data_" + sdf.format(new Date()) + ".csv";
-
             JFileChooser fc = new JFileChooser();
             fc.setSelectedFile(new File(fileName));
-
-            // Si el usuario pulsa guardar
             if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-                //TODO1 xonseguir ruta dekl filechooser
                 File file = fc.getSelectedFile();
-                System.out.println("route");
                 ArrayList<Person> people = readAll();
                 DAOFile daof = new DAOFile();
                 daof.export(people, file);
-                JOptionPane.showMessageDialog(null,
-                        "Data exported successfully as " + fileName);
+                JOptionPane.showMessageDialog(null, "Data exported successfully as " + fileName);
             }
         } catch (IOException ex) {
             System.getLogger(ControllerImplementation.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
-
     }
 
     public void handleDeleteAll() {
         Object[] options = {"Yes", "No"};
-        //int answer = JOptionPane.showConfirmDialog(menu, "Are you sure to delete all people registered?", "Delete All - People v1.1.0", 0, 0);
         int answer = JOptionPane.showOptionDialog(
                 menu,
                 "Are you sure you want to delete all registered people?",
@@ -531,9 +479,8 @@ public class ControllerImplementation implements IController, ActionListener {
                 JOptionPane.WARNING_MESSAGE,
                 null,
                 options,
-                options[1] // Default selection is "No"
+                options[1]
         );
-
         if (answer == 0) {
             deleteAll();
         }
@@ -551,13 +498,6 @@ public class ControllerImplementation implements IController, ActionListener {
         count.setVisible(true);
     }
 
-    /**
-     * This function inserts the Person object with the requested NIF, if it
-     * doesn't exist. If there is any access problem with the storage device,
-     * the program stops.
-     *
-     * @param p Person to insert
-     */
     @Override
     public void insert(Person p) {
         try {
@@ -565,12 +505,9 @@ public class ControllerImplementation implements IController, ActionListener {
                 dao.insert(p);
                 JOptionPane.showMessageDialog(insert, p.getNif() + " has been successfully registered.", insert.getTitle(), JOptionPane.INFORMATION_MESSAGE);
             } else {
-                throw new PersonException(p.getNif() + " is registered and can not "
-                        + "be INSERTED.");
+                throw new PersonException(p.getNif() + " is registered and can not be INSERTED.");
             }
         } catch (Exception ex) {
-            //Exceptions generated by file read/write access. If something goes 
-            // wrong the application closes.
             if (ex instanceof FileNotFoundException || ex instanceof IOException
                     || ex instanceof ParseException || ex instanceof ClassNotFoundException
                     || ex instanceof SQLException || ex instanceof PersistenceException) {
@@ -583,13 +520,6 @@ public class ControllerImplementation implements IController, ActionListener {
         }
     }
 
-    /**
-     * This function updates the Person object with the requested NIF, if it
-     * doesn't exist. NIF can not be aupdated. If there is any access problem
-     * with the storage device, the program stops.
-     *
-     * @param p Person to update
-     */
     @Override
     public void update(Person p) {
         try {
@@ -597,12 +527,9 @@ public class ControllerImplementation implements IController, ActionListener {
                 dao.update(p);
                 JOptionPane.showMessageDialog(update, p.getNif() + " updated successfully!", update.getTitle(), JOptionPane.INFORMATION_MESSAGE);
             } else {
-                throw new PersonException(p.getNif() + " is already in the program and can not "
-                        + "be UPDATED.");
+                throw new PersonException(p.getNif() + " is already in the program and can not be UPDATED.");
             }
         } catch (Exception ex) {
-            //Exceptions generated by file read/write access. If something goes 
-            // wrong the application closes.
             if (ex instanceof FileNotFoundException || ex instanceof IOException
                     || ex instanceof ParseException || ex instanceof ClassNotFoundException
                     || ex instanceof SQLException || ex instanceof PersistenceException) {
@@ -612,13 +539,6 @@ public class ControllerImplementation implements IController, ActionListener {
         }
     }
 
-    /**
-     * This function deletes the Person object with the requested NIF, if it
-     * exists. If there is any access problem with the storage device, the
-     * program stops.
-     *
-     * @param p Person to read
-     */
     @Override
     public void delete(Person p) {
         int answer = JOptionPane.showConfirmDialog(delete, "Are you sure you want to delete this person?", "Delete - People", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
@@ -645,14 +565,6 @@ public class ControllerImplementation implements IController, ActionListener {
         }
     }
 
-    /**
-     * This function returns the Person object with the requested NIF, if it
-     * exists. Otherwise it returns null. If there is any access problem with
-     * the storage device, the program stops.
-     *
-     * @param p Person to read
-     * @return Person or null
-     */
     @Override
     public Person read(Person p) {
         try {
@@ -661,9 +573,6 @@ public class ControllerImplementation implements IController, ActionListener {
                 return pTR;
             }
         } catch (Exception ex) {
-
-            //Exceptions generated by file read access. If something goes wrong 
-            //reading the file, the application closes.
             if (ex instanceof FileNotFoundException || ex instanceof IOException
                     || ex instanceof ParseException || ex instanceof ClassNotFoundException
                     || ex instanceof SQLException || ex instanceof PersistenceException) {
@@ -674,12 +583,6 @@ public class ControllerImplementation implements IController, ActionListener {
         return null;
     }
 
-    /**
-     * This function returns the people registered. If there is any access
-     * problem with the storage device, the program stops.
-     *
-     * @return ArrayList
-     */
     @Override
     public ArrayList<Person> readAll() {
         ArrayList<Person> people = new ArrayList<>();
@@ -696,14 +599,11 @@ public class ControllerImplementation implements IController, ActionListener {
         return people;
     }
 
-    /**
-     * This function deletes all the people registered. If there is any access
-     * problem with the storage device, the program stops.
-     */
     @Override
     public void deleteAll() {
         try {
             dao.deleteAll();
+            JOptionPane.showMessageDialog(menu, "All persons have been deleted successfully.", "Delete All - People v1.1.0", JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception ex) {
             if (ex instanceof FileNotFoundException || ex instanceof IOException
                     || ex instanceof ParseException || ex instanceof ClassNotFoundException
@@ -728,5 +628,4 @@ public class ControllerImplementation implements IController, ActionListener {
         }
         return 0;
     }
-
 }
