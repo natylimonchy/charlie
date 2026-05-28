@@ -59,7 +59,16 @@ public class DAOFile implements IDAO {
                 if (!data[4].equals("null")) {
                     email = data[4];
                 }
-                personToRead = new Person(data[0], data[1], date, photo, email);
+                
+                String numberPhone = null;
+                if (!data[5].equals("null")) {
+                    numberPhone = data[5];
+                }
+                String postalCode = null;
+                if (!data[6].equals("null")) {
+                    postalCode = data[6];
+                }
+                personToRead = new Person(data[0], data[1], date, photo, email, numberPhone, postalCode);
                 break;
             }
             line = br.readLine();
@@ -92,13 +101,84 @@ public class DAOFile implements IDAO {
             if (!data[4].equals("null")) {
                 email = data[4];
             }
-            people.add(new Person(data[0], data[1], date, photo, email));
+            String numberPhone = null;
+            if (!data[5].equals("null")) {
+                numberPhone = data[5];
+            }
+            String postalCode = null;
+            if (!data[6].equals("null")) {
+                numberPhone = data[6];
+            }
+            people.add(new Person(data[0], data[1], date, photo, email, numberPhone, postalCode));
             line = br.readLine();
         }
         br.close();
         return people;
     }
 
+    public void export(ArrayList<Person> people, File file) throws IOException {
+        System.out.println("En el dao");
+        String sep = ";";
+        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+        String date = dateFormat.format(new Date());
+        //TODO2 creare a file con la route que llega de entrada
+        FileWriter fw = new FileWriter(file);
+        BufferedWriter bw = new BufferedWriter(fw);
+        bw.write("NIF" + sep + "Name" + sep + "Date of Birth" + sep + "Photo");
+        bw.newLine();
+        for (Person p : people) {
+            bw.write(p.getNif() + sep + p.getName() + sep
+                    + p.getDateOfBirth() + sep
+                    + (p.getPhoto() != null ? "yes" : "no"));
+            bw.newLine();
+        }
+        bw.flush();
+        bw.close();
+//        String sep = File.separator;
+//        FileWriter fw;
+//        BufferedWriter bw;
+//        fw = new FileWriter(Routes.FILE.getDataFile(), true);
+//        bw = new BufferedWriter(fw);
+//        for (Person p : people) {
+//            
+//        if (p.getDateOfBirth() != null) {
+//            DateFormat dateFormat = new SimpleDateFormat("yyy/MM/dd");
+//            String dateAsString = dateFormat.format(p.getDateOfBirth());
+//            bw.write(p.getName() +";" + p.getNif() + ";" + dateAsString + ";");
+//        } else {
+//            bw.write(p.getName() + ";" + p.getNif() + ";" + "null" + ";");
+//        }
+//        if (p.getPhoto() != null) {
+
+    
+
+    ////            FileOutputStream out;
+////            BufferedOutputStream outB;
+//            String fileName = Routes.FILE.getFolderPhotos() + sep + p.getNif() + ".png";         
+////            out = new FileOutputStream(fileName);
+////            outB = new BufferedOutputStream(out);
+////            BufferedImage bi = new BufferedImage(p.getPhoto().getImage().getWidth(null),
+////                    p.getPhoto().getImage().getHeight(null),
+////                    BufferedImage.TYPE_INT_ARGB);
+////            bi.getGraphics().drawImage(p.getPhoto().getImage(), 0, 0, null);
+////            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+////            ImageIO.write(bi, "png", baos);
+////            baos.flush();
+////            byte[] img = baos.toByteArray();
+////            baos.close();
+////            for (int i = 0; i < img.length; i++) {
+////                outB.write(img[i]);
+////            }
+////            outB.flush();
+////            outB.close();
+//            bw.write(fileName + "Yes photo");
+//        } else {
+//            bw.write("No camera, deportation" + "\n");
+//        }
+//        bw.flush();
+//        bw.close();
+//        }
+    }
     @Override
 
     public void insert(Person p) throws IOException {
@@ -135,9 +215,9 @@ public class DAOFile implements IDAO {
             }
             outB.flush();
             outB.close();
-            bw.write(fileName + "\t" + (p.getEmail() != null ? p.getEmail() : "null") + "\n");
+            bw.write(fileName + "\t" + (p.getEmail() != null ? p.getEmail() : "null") + "\t" + (p.getNumberPhone() != null ? p.getNumberPhone() : "null") + "\t" + (p.getPostalCode() != null ? p.getPostalCode() : "null") + "\n");
         } else {
-            bw.write("null" + "\t" + (p.getEmail() != null ? p.getEmail() : "null") + "\n");
+            bw.write("null" + "\t" + (p.getEmail() != null ? p.getEmail() : "null") + "\t" + (p.getNumberPhone() != null ? p.getNumberPhone() : "null") + "\t" + (p.getPostalCode() != null ? p.getPostalCode() : "null") + "\n");
         }
         bw.flush();
         bw.close();
@@ -159,7 +239,7 @@ public class DAOFile implements IDAO {
                     photoFile.delete();
                 }
             } else {
-                textoNuevo += d[0] + "\t" + d[1] + "\t" + d[2] + "\t" + d[3] + "\t" + d[4]
+                textoNuevo += d[0] + "\t" + d[1] + "\t" + d[2] + "\t" + d[3] + "\t" + d[4] + "\t" + d[5] + d[6]
                         + "\n";
             }
         }
@@ -183,6 +263,11 @@ public class DAOFile implements IDAO {
     public void update(Person p) throws IOException {
         delete(p);
         insert(p);
+    }
+    
+    @Override
+    public int count() throws Exception {
+        return readAll().size();
     }
 
 }

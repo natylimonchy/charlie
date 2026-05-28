@@ -17,6 +17,7 @@ import view.Menu;
 import view.Read;
 import view.ReadAll;
 import view.Update;
+import view.Count;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,12 +29,15 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import javax.persistence.*;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.jdatepicker.DateModel;
@@ -62,6 +66,7 @@ public class ControllerImplementation implements IController, ActionListener {
     private Update update;
     private ReadAll readAll;
     private Login loginView;
+    private Count count;
 
     /**
      * This constructor allows the controller to know which data storage option
@@ -92,6 +97,7 @@ public class ControllerImplementation implements IController, ActionListener {
      */
    
     @Override
+@Override
 public void actionPerformed(ActionEvent e) {
     if (e.getSource() == dSS.getAccept()[0]) {
         handleDataStorageSelection();
@@ -117,8 +123,14 @@ public void actionPerformed(ActionEvent e) {
         handleUpdatePerson();
     } else if (menu != null && e.getSource() == menu.getReadAll()) {
         handleReadAll();
+    } else if (readAll != null && e.getSource() == readAll.getDataExport()) {
+        handleExportData();
     } else if (menu != null && e.getSource() == menu.getDeleteAll()) {
         handleDeleteAll();
+    } else if (menu != null && e.getSource() == menu.getCount()) {
+        handleCount();
+    }
+}
     }
 }
         
@@ -196,7 +208,9 @@ public void actionPerformed(ActionEvent e) {
                         + "name varchar(50), "
                         + "dateOfBirth DATE, "
                         + "photo varchar(200),"
-                        + "email varchar(200) );");
+                        + "email varchar(200),"
+                        + "numberPhone varchar(9),"
+                        + "postalCode varchar(5) );");
                 stmt.close();
                 System.out.println("193");
                 conn.close();
@@ -231,6 +245,7 @@ private void setupMenu() {
     menu.getDelete().addActionListener(this);
     menu.getReadAll().addActionListener(this);
     menu.getDeleteAll().addActionListener(this);
+    menu.getCount().addActionListener(this);
 }
     
   private void setupLogin() {
@@ -272,6 +287,25 @@ private void handleLogin() {
         if (!email.isEmpty()) {
             p.setEmail(email);
         }
+        
+        String phoneNumber = insert.getPhoneNumber().getText().trim();
+        if (!phoneNumber.isEmpty() && !DataValidation.isValidPhoneNumber(phoneNumber)) {
+            JOptionPane.showMessageDialog(insert, "Invalid phone number format.", insert.getTitle(), JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (!phoneNumber.isEmpty()) {
+            p.setNumberPhone(phoneNumber);
+        }
+        
+        String postalCode = insert.getPostalCode().getText().trim();
+        if (!postalCode.isEmpty() && !DataValidation.isValidPostalCode(postalCode)) {
+            JOptionPane.showMessageDialog(insert, "Invalid postal code format.", insert.getTitle(), JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (!postalCode.isEmpty()) {
+            p.setPostalCode(postalCode);
+        }
+        
         insert(p);
         insert.getReset().doClick();
 
@@ -301,6 +335,12 @@ private void handleLogin() {
             }
             if (pNew.getEmail() != null) {
                 read.getEmail().setText(pNew.getEmail());
+            }
+            if (pNew.getNumberPhone() != null) {
+                read.getPhoneNumber().setText(pNew.getNumberPhone());
+            }
+            if (pNew.getPostalCode() != null) {
+                read.getPostalCode().setText(pNew.getPostalCode());
             }
         } else {
             JOptionPane.showMessageDialog(read, p.getNif() + " doesn't exist.", read.getTitle(), JOptionPane.WARNING_MESSAGE);
@@ -340,8 +380,16 @@ private void handleLogin() {
                 update.getUpdate().setEnabled(true);
                 update.getNam().setText(pNew.getName());
                 update.getEmail().setEnabled(true);
+                update.getPhoneNumber().setEnabled(true);
+                update.getPostalCode().setEnabled(true);
                 if (pNew.getEmail() != null) {
                     update.getEmail().setText(pNew.getEmail());
+                }
+                if (pNew.getNumberPhone() != null) {
+                    update.getPhoneNumber().setText(pNew.getNumberPhone());
+                }
+                if (pNew.getPostalCode() != null) {
+                    update.getPostalCode().setText(pNew.getPostalCode());
                 }
                 if (pNew.getDateOfBirth() != null) {
                     Calendar calendar = Calendar.getInstance();
@@ -378,6 +426,24 @@ private void handleLogin() {
             if (!email.isEmpty()) {
                 p.setEmail(email);
             }
+            
+            String phoneNumber = update.getPhoneNumber().getText().trim();
+            if (!phoneNumber.isEmpty() && !DataValidation.isValidPhoneNumber(phoneNumber)) {
+                JOptionPane.showMessageDialog(update, "Invalid phone number format.", update.getTitle(), JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (!phoneNumber.isEmpty()) {
+                p.setNumberPhone(phoneNumber);
+            }
+            String postalCode = update.getPostalCode().getText().trim();
+            if (!postalCode.isEmpty() && !DataValidation.isValidPostalCode(postalCode)) {
+                JOptionPane.showMessageDialog(update, "Invalid phone number format.", update.getTitle(), JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (!postalCode.isEmpty()) {
+                p.setPostalCode(postalCode);
+            }
+            
             update(p);
             update.getReset().doClick();
         }
@@ -409,9 +475,45 @@ private void handleLogin() {
                 } else {
                     model.setValueAt("", i, 4);
                 }
+                if (s.get(i).getNumberPhone() != null) {
+                    model.setValueAt(s.get(i).getNumberPhone(), i, 5);
+                } else {
+                    model.setValueAt("", i, 5);
+                }
+                if (s.get(i).getPostalCode() != null) {
+                    model.setValueAt(s.get(i).getPostalCode(), i, 6);
+                } else {
+                    model.setValueAt("", i, 6);
+                }
             }
+            readAll.getDataExport().addActionListener(this);
             readAll.setVisible(true);
         }
+    }
+
+    public void handleExportData() {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            String fileName = "people_data_" + sdf.format(new Date()) + ".csv";
+
+            JFileChooser fc = new JFileChooser();
+            fc.setSelectedFile(new File(fileName));
+
+            // Si el usuario pulsa guardar
+            if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                //TODO1 xonseguir ruta dekl filechooser
+                File file = fc.getSelectedFile();
+                System.out.println("route");
+                ArrayList<Person> people = readAll();
+                DAOFile daof = new DAOFile();
+                daof.export(people, file);
+                JOptionPane.showMessageDialog(null,
+                        "Data exported successfully as " + fileName);
+            }
+        } catch (IOException ex) {
+            System.getLogger(ControllerImplementation.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+
     }
 
     public void handleDeleteAll() {
@@ -432,6 +534,19 @@ private void handleLogin() {
             deleteAll();
         }
     }
+    
+    public void handleCount() {
+        ArrayList<Person> s = readAll();
+            count = new Count(menu, true);
+            count.setLocationRelativeTo(null);
+            if (s.isEmpty()) {
+                count.getCountResult().setText(String.valueOf(0));
+            } else {
+                count.getCountResult().setText(String.valueOf(s.size()));
+            }
+            count.setVisible(true);
+    }
+    
 
     /**
      * This function inserts the Person object with the requested NIF, if it
@@ -595,5 +710,21 @@ public void delete(Person p) {
             }
         }
     }
+
+    @Override
+    public int count() {
+        try {
+            return dao.count();
+        } catch (Exception ex) {
+            if (ex instanceof FileNotFoundException || ex instanceof IOException
+                    || ex instanceof ParseException || ex instanceof ClassNotFoundException
+                    || ex instanceof SQLException || ex instanceof PersistenceException) {
+                JOptionPane.showMessageDialog(menu, ex.getMessage() + " Closing application.", "Count - People v1.1.0", JOptionPane.ERROR_MESSAGE);
+                System.exit(0);
+            }
+        } 
+        return 0;       
+    }
+    
 
 }

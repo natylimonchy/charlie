@@ -47,6 +47,10 @@ public class Menu extends javax.swing.JFrame {
     public JButton getDeleteAll() {
         return deleteAll;
     }
+    
+    public JButton getCount() {
+        return count;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -65,6 +69,7 @@ public class Menu extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         readAll = new javax.swing.JButton();
         deleteAll = new javax.swing.JButton();
+        count = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Menu - People v1.1.0");
@@ -81,9 +86,9 @@ public class Menu extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 58;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(12, 24, 12, 24);
+        gridBagConstraints.insets = new java.awt.Insets(24, 158, 0, 158);
         getContentPane().add(read, gridBagConstraints);
 
         delete.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -94,9 +99,9 @@ public class Menu extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 58;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(12, 24, 12, 24);
+        gridBagConstraints.insets = new java.awt.Insets(24, 158, 0, 158);
         getContentPane().add(delete, gridBagConstraints);
 
         update.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -107,9 +112,9 @@ public class Menu extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 58;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(12, 24, 12, 24);
+        gridBagConstraints.insets = new java.awt.Insets(24, 158, 0, 158);
         getContentPane().add(update, gridBagConstraints);
 
         insert.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -120,9 +125,9 @@ public class Menu extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 58;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(24, 24, 12, 24);
+        gridBagConstraints.insets = new java.awt.Insets(71, 158, 0, 158);
         getContentPane().add(insert, gridBagConstraints);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 2, 8)); // NOI18N
@@ -130,10 +135,9 @@ public class Menu extends javax.swing.JFrame {
         jLabel1.setText("Author: francesc.perez@stucom.com - Version 1.1.0");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(12, 24, 12, 24);
+        gridBagConstraints.insets = new java.awt.Insets(25, 158, 56, 158);
         getContentPane().add(jLabel1, gridBagConstraints);
 
         readAll.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -144,9 +148,9 @@ public class Menu extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 58;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(12, 24, 12, 24);
+        gridBagConstraints.insets = new java.awt.Insets(24, 158, 0, 158);
         getContentPane().add(readAll, gridBagConstraints);
 
         deleteAll.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -157,16 +161,30 @@ public class Menu extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 5;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 58;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(12, 24, 12, 24);
+        gridBagConstraints.insets = new java.awt.Insets(24, 158, 0, 158);
         getContentPane().add(deleteAll, gridBagConstraints);
+
+        count.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        count.setText("COUNT");
+        count.setMaximumSize(new java.awt.Dimension(120, 50));
+        count.setMinimumSize(new java.awt.Dimension(120, 50));
+        count.setPreferredSize(new java.awt.Dimension(120, 50));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.ipadx = 58;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(24, 158, 0, 158);
+        getContentPane().add(count, gridBagConstraints);
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton count;
     private javax.swing.JButton delete;
     private javax.swing.JButton deleteAll;
     private javax.swing.JButton insert;

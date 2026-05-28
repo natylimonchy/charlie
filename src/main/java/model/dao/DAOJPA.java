@@ -112,6 +112,8 @@ public class DAOJPA implements IDAO {
             pC.setDateOfBirth(p.getDateOfBirth());
 
             pC.setEmail(p.getEmail());
+            pC.setNumberPhone(p.getNumberPhone());
+            pC.setPostalCode(p.getPostalCode());
 
             if (p.getPhoto() != null) {
                 pC.setPhotoOnlyJPA(imageIconToBytes(p.getPhoto()));
@@ -146,6 +148,11 @@ public class DAOJPA implements IDAO {
             em.remove(pR);
         }
         em.getTransaction().commit();
+    }
+    
+    @Override
+    public int count() throws Exception {
+        return readAll().size();
     }
 
 }

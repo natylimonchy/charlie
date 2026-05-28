@@ -28,8 +28,20 @@ public class DataValidation {
     }
     
     public static boolean isValidEmail(String email) {
-    String emailRegex = "^[a-zA-Z0-9_+&-]+(?:\\.[a-zA-Z0-9_+&-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-    return email.matches(emailRegex);
-}
+        String emailRegex = "^[a-zA-Z0-9_+&-]+(?:\\.[a-zA-Z0-9_+&-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(emailRegex);
+    }
+    
+    public static boolean isValidPhoneNumber(String phoneNumber) {
+        //String phoneRegex = "^\\+?[0-9]{1,4}?[-.\\s]?(?\\d{1,3})?[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,9}$";
+        String phoneRegex = "^\\+?[0-9]{1,4}?[-.\\s]?(\\([0-9]{1,3}\\))?[-.\\s]?[0-9]{1,4}[-.\\s]?[0-9]{1,4}[-.\\s]?[0-9]{1,9}$";
+        return phoneNumber.matches(phoneRegex);
+    }
+    
+    public static boolean isValidPostalCode(String postalCode) {
+        //String postalCodeRegex = "^(\d{5})(?:[-\s]?\d{4})?$";
+        String postalCodeRegex = "^(\\d{5})(?:[-\\s]?\\d{4})?$";
+        return postalCode.matches(postalCodeRegex);
+    }
 
 }
