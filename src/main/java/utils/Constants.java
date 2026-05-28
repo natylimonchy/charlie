@@ -15,4 +15,6 @@ public class Constants {
     public static final String FILE_SERIALIZATION = "File (Serialization)";
     public static final String SQL_DATABASE = "SQL - Database";
     public static final String JPA_DATABASE = "JPA - Database";
+    public static final String VALID_USER = "User";
+public static final String VALID_PASSWORD = "12345678";
 }
