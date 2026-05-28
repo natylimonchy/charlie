@@ -40,6 +40,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import model.entity.UserRole;
 import org.jdatepicker.DateModel;
 import utils.Constants;
 import utils.DataValidation;
@@ -67,6 +68,7 @@ public class ControllerImplementation implements IController, ActionListener {
     private ReadAll readAll;
     private Login loginView;
     private Count count;
+    private UserRole userRole;
 
     /**
      * This constructor allows the controller to know which data storage option
@@ -95,46 +97,40 @@ public class ControllerImplementation implements IController, ActionListener {
      *
      * @param e The event generated in the visual part
      */
-   
     @Override
-@Override
-public void actionPerformed(ActionEvent e) {
-    if (e.getSource() == dSS.getAccept()[0]) {
-        handleDataStorageSelection();
-    } else if (loginView != null && e.getSource() == loginView.getLogin()) {
-        handleLogin();
-    } else if (menu != null && e.getSource() == menu.getInsert()) {
-        handleInsertAction();
-    } else if (insert != null && e.getSource() == insert.getInsert()) {
-        handleInsertPerson();
-    } else if (menu != null && e.getSource() == menu.getRead()) {
-        handleReadAction();
-    } else if (read != null && e.getSource() == read.getRead()) {
-        handleReadPerson();
-    } else if (menu != null && e.getSource() == menu.getDelete()) {
-        handleDeleteAction();
-    } else if (delete != null && e.getSource() == delete.getDelete()) {
-        handleDeletePerson();
-    } else if (menu != null && e.getSource() == menu.getUpdate()) {
-        handleUpdateAction();
-    } else if (update != null && e.getSource() == update.getRead()) {
-        handleReadForUpdate();
-    } else if (update != null && e.getSource() == update.getUpdate()) {
-        handleUpdatePerson();
-    } else if (menu != null && e.getSource() == menu.getReadAll()) {
-        handleReadAll();
-    } else if (readAll != null && e.getSource() == readAll.getDataExport()) {
-        handleExportData();
-    } else if (menu != null && e.getSource() == menu.getDeleteAll()) {
-        handleDeleteAll();
-    } else if (menu != null && e.getSource() == menu.getCount()) {
-        handleCount();
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == dSS.getAccept()[0]) {
+            handleDataStorageSelection();
+        } else if (loginView != null && e.getSource() == loginView.getLogin()) {
+            handleLogin();
+        } else if (menu != null && e.getSource() == menu.getInsert()) {
+            handleInsertAction();
+        } else if (insert != null && e.getSource() == insert.getInsert()) {
+            handleInsertPerson();
+        } else if (menu != null && e.getSource() == menu.getRead()) {
+            handleReadAction();
+        } else if (read != null && e.getSource() == read.getRead()) {
+            handleReadPerson();
+        } else if (menu != null && e.getSource() == menu.getDelete()) {
+            handleDeleteAction();
+        } else if (delete != null && e.getSource() == delete.getDelete()) {
+            handleDeletePerson();
+        } else if (menu != null && e.getSource() == menu.getUpdate()) {
+            handleUpdateAction();
+        } else if (update != null && e.getSource() == update.getRead()) {
+            handleReadForUpdate();
+        } else if (update != null && e.getSource() == update.getUpdate()) {
+            handleUpdatePerson();
+        } else if (menu != null && e.getSource() == menu.getReadAll()) {
+            handleReadAll();
+        } else if (readAll != null && e.getSource() == readAll.getDataExport()) {
+            handleExportData();
+        } else if (menu != null && e.getSource() == menu.getDeleteAll()) {
+            handleDeleteAll();
+        } else if (menu != null && e.getSource() == menu.getCount()) {
+            handleCount();
+        }
     }
-}
-    }
-}
-        
-    
 
     private void handleDataStorageSelection() {
         String daoSelected = ((javax.swing.JCheckBox) (dSS.getAccept()[1])).getText();
@@ -235,35 +231,43 @@ public void actionPerformed(ActionEvent e) {
         }
         dao = new DAOJPA();
     }
-private void setupMenu() {
-    loginView.setVisible(false);
-    menu = new Menu();
-    menu.setVisible(true);
-    menu.getInsert().addActionListener(this);
-    menu.getRead().addActionListener(this);
-    menu.getUpdate().addActionListener(this);
-    menu.getDelete().addActionListener(this);
-    menu.getReadAll().addActionListener(this);
-    menu.getDeleteAll().addActionListener(this);
-    menu.getCount().addActionListener(this);
-}
-    
-  private void setupLogin() {
-    loginView = new Login();
-    loginView.getLogin().addActionListener(this);
-    loginView.setVisible(true);
-}
-private void handleLogin() {
-    String user = loginView.getUser().getText();
-    String pass = new String(loginView.getPassword().getPassword());
-    if (user.equals(Constants.VALID_USER) && pass.equals(Constants.VALID_PASSWORD)) {
-        JOptionPane.showMessageDialog(loginView, "Login successful.", loginView.getTitle(), JOptionPane.INFORMATION_MESSAGE);
-        loginView.dispose();
-        setupMenu();
-    } else {
-        JOptionPane.showMessageDialog(loginView, "Invalid username or password.", loginView.getTitle(), JOptionPane.ERROR_MESSAGE);
+
+    private void setupMenu() {
+        loginView.setVisible(false);
+        menu = new Menu();
+        menu.setVisible(true);
+        menu.getInsert().addActionListener(this);
+        menu.getRead().addActionListener(this);
+        menu.getUpdate().addActionListener(this);
+        menu.getDelete().addActionListener(this);
+        menu.getReadAll().addActionListener(this);
+        menu.getDeleteAll().addActionListener(this);
+        menu.getCount().addActionListener(this);
     }
-}
+
+    private void setupLogin() {
+        loginView = new Login();
+        loginView.getLogin().addActionListener(this);
+        loginView.setVisible(true);
+    }
+
+    private void handleLogin() {
+        String user = loginView.getUser().getText();
+        String pass = new String(loginView.getPassword().getPassword());
+        if (user.equals(Constants.ADMIN_USER) && pass.equals(Constants.ADMIN_PASSWORD)) {
+            userRole = UserRole.ADMIN;
+            JOptionPane.showMessageDialog(loginView, "Login successful. Welcome, Admin!", loginView.getTitle(), JOptionPane.INFORMATION_MESSAGE);
+            loginView.dispose();
+            setupMenu();
+        } else if (user.equals(Constants.EMPLOYEE_USER) && pass.equals(Constants.EMPLOYEE_PASSWORD)) {
+            userRole = UserRole.EMPLOYEE;
+            JOptionPane.showMessageDialog(loginView, "Login successful. Welcome, Employee!", loginView.getTitle(), JOptionPane.INFORMATION_MESSAGE);
+            loginView.dispose();
+            setupMenu();
+        } else {
+            JOptionPane.showMessageDialog(loginView, "Invalid username or password.", loginView.getTitle(), JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     private void handleInsertAction() {
         insert = new Insert(menu, true);
@@ -287,7 +291,7 @@ private void handleLogin() {
         if (!email.isEmpty()) {
             p.setEmail(email);
         }
-        
+
         String phoneNumber = insert.getPhoneNumber().getText().trim();
         if (!phoneNumber.isEmpty() && !DataValidation.isValidPhoneNumber(phoneNumber)) {
             JOptionPane.showMessageDialog(insert, "Invalid phone number format.", insert.getTitle(), JOptionPane.ERROR_MESSAGE);
@@ -296,7 +300,7 @@ private void handleLogin() {
         if (!phoneNumber.isEmpty()) {
             p.setNumberPhone(phoneNumber);
         }
-        
+
         String postalCode = insert.getPostalCode().getText().trim();
         if (!postalCode.isEmpty() && !DataValidation.isValidPostalCode(postalCode)) {
             JOptionPane.showMessageDialog(insert, "Invalid postal code format.", insert.getTitle(), JOptionPane.ERROR_MESSAGE);
@@ -305,7 +309,7 @@ private void handleLogin() {
         if (!postalCode.isEmpty()) {
             p.setPostalCode(postalCode);
         }
-        
+
         insert(p);
         insert.getReset().doClick();
 
@@ -426,7 +430,7 @@ private void handleLogin() {
             if (!email.isEmpty()) {
                 p.setEmail(email);
             }
-            
+
             String phoneNumber = update.getPhoneNumber().getText().trim();
             if (!phoneNumber.isEmpty() && !DataValidation.isValidPhoneNumber(phoneNumber)) {
                 JOptionPane.showMessageDialog(update, "Invalid phone number format.", update.getTitle(), JOptionPane.ERROR_MESSAGE);
@@ -443,7 +447,7 @@ private void handleLogin() {
             if (!postalCode.isEmpty()) {
                 p.setPostalCode(postalCode);
             }
-            
+
             update(p);
             update.getReset().doClick();
         }
@@ -534,19 +538,18 @@ private void handleLogin() {
             deleteAll();
         }
     }
-    
+
     public void handleCount() {
         ArrayList<Person> s = readAll();
-            count = new Count(menu, true);
-            count.setLocationRelativeTo(null);
-            if (s.isEmpty()) {
-                count.getCountResult().setText(String.valueOf(0));
-            } else {
-                count.getCountResult().setText(String.valueOf(s.size()));
-            }
-            count.setVisible(true);
+        count = new Count(menu, true);
+        count.setLocationRelativeTo(null);
+        if (s.isEmpty()) {
+            count.getCountResult().setText(String.valueOf(0));
+        } else {
+            count.getCountResult().setText(String.valueOf(s.size()));
+        }
+        count.setVisible(true);
     }
-    
 
     /**
      * This function inserts the Person object with the requested NIF, if it
@@ -616,31 +619,31 @@ private void handleLogin() {
      *
      * @param p Person to read
      */
-   @Override
-public void delete(Person p) {
-    int answer = JOptionPane.showConfirmDialog(delete, "Are you sure you want to delete this person?", "Delete - People", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-    if (answer != JOptionPane.YES_OPTION) {
-        return;
+    @Override
+    public void delete(Person p) {
+        int answer = JOptionPane.showConfirmDialog(delete, "Are you sure you want to delete this person?", "Delete - People", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        if (answer != JOptionPane.YES_OPTION) {
+            return;
+        }
+        try {
+            if (dao.read(p) != null) {
+                dao.delete(p);
+                JOptionPane.showMessageDialog(delete, "Person deleted successfully!", "Delete People", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                throw new PersonException(p.getNif() + " is not registered and can not be DELETED");
+            }
+        } catch (Exception ex) {
+            if (ex instanceof FileNotFoundException || ex instanceof IOException
+                    || ex instanceof ParseException || ex instanceof ClassNotFoundException
+                    || ex instanceof SQLException || ex instanceof PersistenceException) {
+                JOptionPane.showMessageDialog(delete, ex.getMessage() + ex.getClass() + " Closing application.", "Delete - People v1.1.0", JOptionPane.ERROR_MESSAGE);
+                System.exit(0);
+            }
+            if (ex instanceof PersonException) {
+                JOptionPane.showMessageDialog(delete, ex.getMessage(), "Delete - People v1.1.0", JOptionPane.WARNING_MESSAGE);
+            }
+        }
     }
-    try {
-        if (dao.read(p) != null) {
-            dao.delete(p);
-            JOptionPane.showMessageDialog(delete, "Person deleted successfully!", "Delete People", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            throw new PersonException(p.getNif() + " is not registered and can not be DELETED");
-        }
-    } catch (Exception ex) {
-        if (ex instanceof FileNotFoundException || ex instanceof IOException
-                || ex instanceof ParseException || ex instanceof ClassNotFoundException
-                || ex instanceof SQLException || ex instanceof PersistenceException) {
-            JOptionPane.showMessageDialog(delete, ex.getMessage() + ex.getClass() + " Closing application.", "Delete - People v1.1.0", JOptionPane.ERROR_MESSAGE);
-            System.exit(0);
-        }
-        if (ex instanceof PersonException) {
-            JOptionPane.showMessageDialog(delete, ex.getMessage(), "Delete - People v1.1.0", JOptionPane.WARNING_MESSAGE);
-        }
-    }
-}
 
     /**
      * This function returns the Person object with the requested NIF, if it
@@ -722,9 +725,8 @@ public void delete(Person p) {
                 JOptionPane.showMessageDialog(menu, ex.getMessage() + " Closing application.", "Count - People v1.1.0", JOptionPane.ERROR_MESSAGE);
                 System.exit(0);
             }
-        } 
-        return 0;       
+        }
+        return 0;
     }
-    
 
 }

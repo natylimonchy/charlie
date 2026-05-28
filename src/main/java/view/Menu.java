@@ -6,6 +6,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import model.entity.UserRole;
 
 /**
  * This class defines the main menu of the application. Actions that can be 
@@ -52,6 +53,23 @@ public class Menu extends javax.swing.JFrame {
         return count;
     }
 
+        public void configureForRole(UserRole role) {
+        if (role == UserRole.ADMIN) {
+            insert.setVisible(true);
+            update.setVisible(true);
+            delete.setVisible(true);
+            deleteAll.setVisible(true);
+        } else {
+            // EMPLOYEE: hide modification buttons
+            insert.setVisible(false);
+            update.setVisible(false);
+            delete.setVisible(false);
+            deleteAll.setVisible(false);
+        }
+    }
+    
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
