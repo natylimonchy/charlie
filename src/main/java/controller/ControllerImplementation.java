@@ -40,6 +40,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import model.entity.UserRole;
 import org.jdatepicker.DateModel;
 import utils.Constants;
 import utils.DataValidation;
@@ -57,6 +58,7 @@ public class ControllerImplementation implements IController, ActionListener {
     private ReadAll readAll;
     private Login loginView;
     private Count count;
+    private UserRole userRole;
 
     public ControllerImplementation(DataStorageSelection dSS) {
         this.dSS = dSS;
